@@ -1,218 +1,319 @@
-#LIBRERÍAS EMPLEADAS
-#La librería STREAMLIT nos permite crear nuestras web de forma sencilla con animaciones visuales
-#sin necesidad de HTML o JavaScript.
 import streamlit as st
-from modules import basic_calculations, advanced_lines, electromagnetism, topology, asincronous
-#Con la línea de "from modules import archivo1, archivo 2, archivo3", estamos importando
-#a nuestro código los distintos archivos de la carpeta MODULES. Así los podemos emplear
-#para la lógica de nuestro programa. 
+from modules import basic_calculations, advanced_lines, electromagnetism, topology, asincronous, dc_motors, synchronous_machines
 
-#En esta parte definimos lo que aparece en la pestaña del navegador: el nombre
-#y el icono del rayo. Con el comando LAYOUT=WIDE definimos que el contenido
-#abarque todo el ancho de la pantalla. 
-st.set_page_config(
-    page_title="Electric Design Suite",
-    page_icon="⚡",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+st.set_page_config(page_title="Electric Design Suite", page_icon="⚡", layout="wide", initial_sidebar_state="collapsed")
 
-#En este apartado empleamos el lenguaje CSS para personalizar la apariencia de nuestra
-#web. Empleamos la librería Streamlit para ello. 
+# ── ESTADO & NAVEGACIÓN ───────────────────────────────────────────────────────
+if 'nav' in st.query_params:
+    nav = st.query_params['nav']
+    st.session_state.current_section = nav
+    st.query_params.clear()
+
+if "current_section" not in st.session_state:
+    st.session_state.current_section = "Home"
+
+def set_section(s):
+    st.session_state.current_section = s
+    st.rerun()
+
+# ── ESTILOS GLOBALES ──────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-    /* Importar fuente moderna (Inter) */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;}
+.stApp{background:#080808;font-family:'Inter',sans-serif;color:#71717A;}
+h1,h2,h3{font-family:'Inter',sans-serif;color:#FAFAFA;font-weight:600;letter-spacing:-0.5px;}
+#MainMenu,footer,header{visibility:hidden;}
+section[data-testid="stSidebar"],[data-testid="collapsedControl"]{display:none!important;}
 
-    /* Estilos Globales */
-    .stApp {
-        background-color: #000000;
-        font-family: 'Inter', sans-serif;
-    }
-    
-    h1, h2, h3 {
-        color: #FAFAFA;
-        font-weight: 700;
-        letter-spacing: -0.5px;
-    }
-
-    /* USAMOS TARJETAS INTERACTIVAS PARA REPRESENTAR LA INFORMACIÓN */
-    /* Apuntamos directamente a los botones dentro de las columnas */
-    div.stButton > button {
-        width: 100%;
-        height: 240px; /* Altura de tarjeta grande */
-        
-        /* Estética de la Tarjeta (Dark Glass / Neon) */
-        background: linear-gradient(145deg, #161B22, #00ADB5);
-        border: 1px solid #30363D;
-        border-radius: 12px;
-        color: #C9D1D9;
-        
-        /* Tipografía y Layout del contenido del botón */
-        font-family: 'Inter', sans-serif;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        white-space: pre-wrap; /* Permite saltos de línea (\n) en el texto */
-        
-        /* Transiciones suaves */
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    }
-
-    /* ANIMACIÓN EFECTO HOVER (AL PASAR EL RATÓN) */
-    div.stButton > button:hover {
-        transform: translateY(-5px); /* Se eleva */
-        border-color: #00ADB5;       /* Borde Neón */
-        color: #FFFFFF;              /* Texto blanco brillante */
-        box-shadow: 0 8px 20px rgba(0, 173, 181, 0.15); /* Resplandor */
-        background: linear-gradient(145deg, #1c2128, #161b22);
-    }
-    
-    /* ANIMACIÓN EFECTO ACTIVE (AL PULSAR) */
-    div.stButton > button:active {
-        transform: translateY(2px);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-    }
-    
-    /* Separadores */
-    hr { border-color: #30363D; }
-
+/* TOP NAV BUTTONS */
+div[data-testid="stHorizontalBlock"] div.stButton>button{
+    width:100%!important;height:34px!important;padding:0 6px!important;
+    background:transparent!important;border:none!important;
+    border-bottom:1px solid transparent!important;border-radius:0!important;
+    color:#3F3F46!important;font-family:'Inter',sans-serif!important;
+    font-size:13px!important;font-weight:400!important;
+    transition:color .15s ease,border-color .15s ease!important;
+    box-shadow:none!important;transform:none!important;white-space:nowrap!important;
+}
+div[data-testid="stHorizontalBlock"] div.stButton>button:hover{
+    color:#E4E4E7!important;border-bottom:1px solid #3F3F46!important;
+    background:transparent!important;box-shadow:none!important;transform:none!important;
+}
+hr{border-color:#141414;opacity:1;}
 </style>
 """, unsafe_allow_html=True)
 
-#La función ST.SESSION_STATE ES COMO UNA MEMORIA A CORTO PLAZO INTERNA
-#DE LA LIBRERÍA STREAMLIT. 
-if 'current_section' not in st.session_state:
-    st.session_state.current_section = "Home"
+# ── TOP NAV ───────────────────────────────────────────────────────────────────
+st.markdown("""
+<div style="display:flex;align-items:center;justify-content:space-between;
+            height:52px;border-bottom:1px solid #111;">
+  <div style="font-family:'Inter',sans-serif;font-size:14px;font-weight:600;color:#FAFAFA;letter-spacing:-0.2px;">
+    Electric Design Suite
+  </div>
+  <div style="font-family:'Inter',sans-serif;font-size:11px;color:#27272A;">
+    v1.0 &nbsp;·&nbsp; Universidad de Almería
+  </div>
+</div>
+""", unsafe_allow_html=True)
 
-#En esta parte definimos las funciones que nos permiten movernos
-#entre secciones. "ST.SESSION_STATE + .CURRENT_SECTION = "Sección" significa que
-#si la variable almacenada en session_state es igual a la sección definida en
-#current_section, vuelve a ejecutar la página (rerun) para dirigirse ahí.  
-def go_home():
-    st.session_state.current_section = "Home"
-    st.rerun()
+nav_cols = st.columns([1,1,1,1,1,1,1,1,4])
+nav_map = [
+    ("Inicio","Home"),("Cálculos","Basic"),("Líneas","Advanced"),
+    ("Topología","Topology"),("Electromag.","Electromagnetism"),
+    ("Asíncronos","Asynchronous"),("Motores DC","DCMotors"),("Síncronas","Synchronous"),
+]
+for i,(lbl,key) in enumerate(nav_map):
+    with nav_cols[i]:
+        if st.button(lbl, key=f"tnav_{key}"):
+            set_section(key)
 
-def set_section(section):
-    st.session_state.current_section = section
-    st.rerun()
+st.markdown("<div style='border-bottom:1px solid #111;'></div>", unsafe_allow_html=True)
 
-#Aquí definimos los elementos de la barra lateral deslizante. La función
-#MARKDOWN siempre tiene que ver con los elementos estéticos. 
-with st.sidebar:
-    st.markdown("<h1 style='text-align: center; color: #00ADB5;'>⚡ EDS Pro</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; font-size: 0.8em; color: gray;'>Electric Design Suite v1.0</p>", unsafe_allow_html=True)
-    st.markdown("---")
-    
-    if st.button("🏠 Página de Inicio"):
-        go_home()
-    elif st.button("📐 Cálculos Básicos & Normativa"):
-        set_section("Basic")
-    elif st.button("⚡ Líneas de Alta Potencia"):
-        set_section("Advanced")
-    elif st.button("🌐 Topología & Dimensionado"):
-        set_section("Topology")
-    elif st.button("🔌 Principios del electromagnetismo"):
-        set_section("Electromagnetism")
-    elif st.button("🌀 Motores Asíncronos"):
-        set_section("Asynchronous")
-    st.markdown("---")
-    st.caption("© 2025 JaqueSoft")
-
-#Aquí definimos los elementos de la página principal.
+# ── HOME ─────────────────────────────────────────────────────────────────────
 if st.session_state.current_section == "Home":
-    
-    #Aquí volvemos a usar la función MARKDOWN para la estética del ENCABEZADO.
-    st.markdown("""
-    <style>
-    @keyframes cinnamon-glow {
-        0% { 
-            transform: translateY(0px); 
-            color: #D2691E; /* Canela base */
-            text-shadow: 0 0 5px rgba(210, 105, 30, 0.2);
-        }
-        50% { 
-            transform: translateY(-8px); 
-            color: #E67E22; /* Canela más brillante al subir */
-            text-shadow: 0 10px 20px rgba(210, 105, 30, 0.5);
-        }
-        100% { 
-            transform: translateY(0px); 
-            color: #D2691E;
-            text-shadow: 0 0 5px rgba(210, 105, 30, 0.2);
-        }
-    }
 
-    .titulo-ingeniero {
-        font-size: 3.2rem; /* Un poco más grande para resaltar */
-        font-weight: 800;
-        color: #D2691E;
-        margin-bottom: 0.5rem;
-        display: inline-block;
-        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        animation: cinnamon-glow 3.5s ease-in-out infinite;
-    }
-    </style>
-    
-    <div style="text-align: center; padding: 2.5rem 0;">
-        <h1 class="titulo-ingeniero">Bienvenido, Ingeniero Eléctrico</h1>
-        <p style="font-size: 1.2rem; color: #8B949E; font-weight: 300; letter-spacing: 1px;">
-            Seleccione el módulo a consultar para su proyecto.
-        </p>
+    st.markdown("""
+    <div style="padding:52px 0 36px 0;">
+      <div style="font-size:10px;font-weight:500;color:#27272A;letter-spacing:2.5px;
+                  text-transform:uppercase;margin-bottom:14px;font-family:'Inter',sans-serif;">
+        Plataforma de Ingeniería Eléctrica
+      </div>
+      <h1 style="font-size:2.7rem;font-weight:600;color:#FAFAFA;letter-spacing:-1.6px;
+                 margin:0 0 14px 0;line-height:1.1;">
+        Simulación y diseño<br>de máquinas eléctricas.
+      </h1>
+      <p style="font-size:0.95rem;color:#3F3F46;font-weight:300;max-width:440px;
+                line-height:1.8;margin:0;font-family:'Inter',sans-serif;">
+        Selecciona un módulo para acceder al motor de cálculo,
+        los simuladores y la documentación técnica.
+      </p>
     </div>
     """, unsafe_allow_html=True)
+
+    gallery_html = """
+<div class="eds-gallery">
+  <a href="?nav=Basic" target="_self" class="eds-card" style="--accent:#8AB4F8">
+    <div class="card-bg" style="background:linear-gradient(160deg,#0B1E3A,#0D2954,#071833)"></div>
+    <div class="card-overlay"></div>
+    <div class="card-num">01</div>
+    <div class="card-label-v">CÁLCULOS</div>
+    <div class="card-content">
+      <div class="card-title">Cálculos Básicos</div>
+      <div class="card-desc">ITC-BT, secciones de cable,<br>protecciones y normativa.</div>
+    </div>
+    <div class="card-line"></div>
+  </a>
+
+  <a href="?nav=Advanced" target="_self" class="eds-card" style="--accent:#FDBA74">
+    <div class="card-bg" style="background:linear-gradient(160deg,#1A0A00,#2D1200,#3D2000)"></div>
+    <div class="card-overlay"></div>
+    <div class="card-num">02</div>
+    <div class="card-label-v">LÍNEAS</div>
+    <div class="card-content">
+      <div class="card-title">Líneas Alta Potencia</div>
+      <div class="card-desc">Ampacidad térmica, Blondel<br>y optimización LCC.</div>
+    </div>
+    <div class="card-line"></div>
+  </a>
+
+  <a href="?nav=Topology" target="_self" class="eds-card" style="--accent:#6EE7B7">
+    <div class="card-bg" style="background:linear-gradient(160deg,#061A10,#0A2E1E,#082514)"></div>
+    <div class="card-overlay"></div>
+    <div class="card-num">03</div>
+    <div class="card-label-v">TOPOLOGÍA</div>
+    <div class="card-content">
+      <div class="card-title">Topología y Dimensionado</div>
+      <div class="card-desc">Redes radiales, anillo<br>y perfiles de tensión.</div>
+    </div>
+    <div class="card-line"></div>
+  </a>
+
+  <a href="?nav=Electromagnetism" target="_self" class="eds-card" style="--accent:#FCD34D">
+    <div class="card-bg" style="background:linear-gradient(160deg,#1A1400,#2A2000,#1E1800)"></div>
+    <div class="card-overlay"></div>
+    <div class="card-num">04</div>
+    <div class="card-label-v">ELECTROMAG</div>
+    <div class="card-content">
+      <div class="card-title">Electromagnetismo</div>
+      <div class="card-desc">Circuitos magnéticos,<br>histéresis B-H y Faraday.</div>
+    </div>
+    <div class="card-line"></div>
+  </a>
+
+  <a href="?nav=Asynchronous" target="_self" class="eds-card" style="--accent:#C4B5FD">
+    <div class="card-bg" style="background:linear-gradient(160deg,#0E0818,#190D2E,#0F0520)"></div>
+    <div class="card-overlay"></div>
+    <div class="card-num">05</div>
+    <div class="card-label-v">ASÍNCRONOS</div>
+    <div class="card-content">
+      <div class="card-title">Motores Asíncronos</div>
+      <div class="card-desc">Steinmetz, curva Par-Vel.<br>y Teorema de Ferraris.</div>
+    </div>
+    <div class="card-line"></div>
+  </a>
+
+  <a href="?nav=DCMotors" target="_self" class="eds-card" style="--accent:#FCA5A5">
+    <div class="card-bg" style="background:linear-gradient(160deg,#1A0505,#2A0808,#1E0404)"></div>
+    <div class="card-overlay"></div>
+    <div class="card-num">06</div>
+    <div class="card-label-v">MOTORES DC</div>
+    <div class="card-content">
+      <div class="card-title">Motores DC</div>
+      <div class="card-desc">Excitación, 4 cuadrantes<br>y control de velocidad.</div>
+    </div>
+    <div class="card-line"></div>
+  </a>
+
+  <a href="?nav=Synchronous" target="_self" class="eds-card" style="--accent:#5EEAD4">
+    <div class="card-bg" style="background:linear-gradient(160deg,#021612,#042620,#031A15)"></div>
+    <div class="card-overlay"></div>
+    <div class="card-num">07</div>
+    <div class="card-label-v">SÍNCRONAS</div>
+    <div class="card-content">
+      <div class="card-title">Máquinas Síncronas</div>
+      <div class="card-desc">Reactancia síncrona,<br>curvas en V y estabilidad.</div>
+    </div>
+    <div class="card-line"></div>
+  </a>
+</div>
+"""
+
+    st.markdown("""
+    <style>
+    .eds-gallery {
+        display: flex;
+        gap: 4px;
+        height: 430px;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .eds-card {
+        position: relative;
+        flex: 1;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: flex 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        min-width: 44px;
+        text-decoration: none !important;
+        color: inherit !important;
+        display: block;
+        cursor: pointer;
+    }
+    .eds-gallery:hover .eds-card { flex: 0.35; }
+    .eds-gallery .eds-card:hover { flex: 5 !important; }
+
+    .card-bg {
+        position: absolute; inset: 0;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .eds-card:hover .card-bg { transform: scale(1.04); }
+
+    .card-overlay {
+        position: absolute; inset: 0;
+        background: linear-gradient(to top,
+            rgba(0,0,0,0.9) 0%,
+            rgba(0,0,0,0.35) 45%,
+            rgba(0,0,0,0.06) 100%);
+    }
+    .card-num {
+        position: absolute; top: 18px; right: 18px;
+        font-family: 'Inter', monospace;
+        font-size: 10px; letter-spacing: 1px;
+        color: rgba(255,255,255,0.15);
+        z-index: 5; opacity: 0;
+        transition: opacity 0.3s ease 0.12s;
+    }
+    .eds-card:hover .card-num { opacity: 1; }
+
+    .card-label-v {
+        position: absolute;
+        bottom: 24px; left: 50%;
+        transform: translateX(-50%) rotate(-90deg);
+        font-family: 'Inter', sans-serif;
+        font-size: 9px; font-weight: 500;
+        letter-spacing: 2px; text-transform: uppercase;
+        color: rgba(255,255,255,0.22);
+        white-space: nowrap;
+        transition: opacity 0.25s ease;
+        z-index: 3;
+    }
+    .eds-card:hover .card-label-v { opacity: 0; }
+
+    .card-content {
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        padding: 28px 24px 30px 24px;
+        z-index: 4;
+    }
+    .card-title {
+        font-family: 'Inter', sans-serif;
+        font-size: 1.05rem; font-weight: 600;
+        color: #FAFAFA; line-height: 1.25;
+        letter-spacing: -0.3px;
+        opacity: 0; transform: translateY(14px);
+        transition: opacity 0.3s ease 0.18s, transform 0.3s ease 0.18s;
+        white-space: nowrap;
+    }
+    .card-desc {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.76rem; font-weight: 300;
+        color: #9CA3AF; line-height: 1.65;
+        margin-top: 10px;
+        opacity: 0; transform: translateY(10px);
+        transition: opacity 0.28s ease 0.26s, transform 0.28s ease 0.26s;
+    }
+    .eds-card:hover .card-title,
+    .eds-card:hover .card-desc { opacity: 1; transform: translateY(0); }
+
+    .card-line {
+        position: absolute; bottom: 0; left: 0;
+        height: 1.5px; width: 0;
+        background: var(--accent, #fff);
+        opacity: 0.45;
+        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.08s;
+    }
+    .eds-card:hover .card-line { width: 100%; }
+    </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown(gallery_html, unsafe_allow_html=True)
+
+    # Barra de estado
+    st.markdown("""
+    <div style="margin-top:28px;padding-top:18px;border-top:1px solid #111;
+                display:flex;align-items:center;gap:22px;
+                font-family:'Inter',monospace;font-size:11px;color:#222;">
+      <span>
+        <span style="display:inline-block;width:5px;height:5px;border-radius:50%;
+                     background:#22C55E;margin-right:7px;box-shadow:0 0 5px #22C55E;"></span>
+        Sistema operativo
+      </span>
+      <span style="color:#1A1A1A;">·</span>
+      <span>7 módulos activos</span>
+      <span style="color:#1A1A1A;">·</span>
+      <span>Universidad de Almería · 25/26</span>
+    </div>
     
-    #Con MARKDOWN además definimos las secciones de la web como botones con sus animaciones propias. 
-    st.markdown("---")
+    <div style="margin-top:40px; padding:20px 0; border-top:1px solid rgba(255,255,255,0.05); text-align:center;">
+      <div style="font-family:'Inter', sans-serif; font-size:13px; font-weight:400; color:rgba(255,255,255,0.6); letter-spacing:0.5px;">
+        Desarrollado por <span style="color:#FAFAFA; font-weight:600; letter-spacing:0px;">Jaime Salinas Reche</span> y <span style="color:#FAFAFA; font-weight:600; letter-spacing:0px;">Enrique Antonio Raudales Rodríguez</span>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
 
-    # Layout de Tarjetas (Que ahora son botones directos)
-    col1, col2, col3, col4, col5 = st.columns(5)
-    
-    # Usamos \n\n para separar Icono, Título y Descripción visualmente gracias al CSS 'white-space: pre-wrap'
-    
-    with col1:
-        #TARJETA 1
-        content_1 = "📐\n\nCÁLCULOS BÁSICOS & NORMATIVA\n\nClasificación ITC-BT, Ley de Ohm,\nFactores de potencia y Cables."
-        if st.button(content_1):
-            set_section("Basic")
-
-    with col2:
-        #TARJETA 2
-        content_2 = "⚡\n\nLÍNEAS DE ALTA POTENCIA\n\nCálculo avanzado de flechas,\nAnálisis térmico y Transitorios."
-        if st.button(content_2):
-            set_section("Advanced")
-
-    with col3:
-        #TARJETA 3
-        content_3 = "🌐\n\nTOPOLOGÍA & DIMENSIONADO\n\nRedes Radiales vs Anillo,\nUnifilares y Optimización."
-        if st.button(content_3):
-            set_section("Topology")
-    
-    with col4:
-        #TARJETA 4
-        content_4 = "🔌\n\nPRINCIPIOS DEL ELECTROMAGNETISMO\n\nTransformadores, Motores,\nGeneradores y Circuitos Magnéticos."
-        if st.button(content_4):
-            set_section("Electromagnetism")
-    with col5:
-        #TARJETA 5
-        content_5 = "🌀\n\nMOTORES ASÍNCRONOS\n\nAnálisis de rendimiento,\nCurvas de par y Eficiencia."
-        if st.button(content_5):
-            set_section("Asynchronous")
-
-#Ejecutamos las APPS cuando se seleccionen los módulos correspondientes. 
-
+# ── ROUTING ───────────────────────────────────────────────────────────────────
 elif st.session_state.current_section == "Basic":
     basic_calculations.app()
-
 elif st.session_state.current_section == "Advanced":
     advanced_lines.app()
-
 elif st.session_state.current_section == "Topology":
     topology.app()
 elif st.session_state.current_section == "Electromagnetism":
     electromagnetism.app()
 elif st.session_state.current_section == "Asynchronous":
     asincronous.app()
+elif st.session_state.current_section == "DCMotors":
+    dc_motors.app()
+elif st.session_state.current_section == "Synchronous":
+    synchronous_machines.app()

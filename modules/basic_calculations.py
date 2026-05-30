@@ -487,7 +487,7 @@ def app():
                 La elección entre Cobre (Cu) y Aluminio (Al) no es solo de coste inicial. 
                 El Cu tiene menor resistividad, lo que reduce las pérdidas por efecto Joule:
                 """)
-                st.latex(r"P_{pérdidas} = 3 \cdot I^2 \cdot \frac{L}{\sigma \cdot S}")
+                st.latex(r"P_{perdidas} = 3 \cdot I^2 \cdot \frac{L}{\sigma \cdot S}")
                 st.info("A largo plazo (>30 años), el ahorro en pérdidas del Cobre suele compensar su mayor precio inicial.")
             
             with col_t2:

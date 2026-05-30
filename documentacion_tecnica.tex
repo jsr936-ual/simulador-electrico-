@@ -1,0 +1,437 @@
+\documentclass[11pt,a4paper]{article}
+
+% Paquetes de codificación y lenguaje
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage[T1]{fontenc}
+
+% Tipografía moderna sin remates (estilo Google Docs / Inter)
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{microtype} % Mejoras tipográficas en el espaciado
+
+% Configuración de márgenes limpios y amplios
+\usepackage[left=2.54cm,right=2.54cm,top=2.54cm,bottom=2.54cm]{geometry}
+
+% Definición de paleta de colores industriales (Estilo Schneider Electric / ETAP)
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, calc}
+
+\definecolor{segreen}{RGB}{61, 205, 88}      % Verde corporativo de automatización
+\definecolor{sedark}{RGB}{28, 28, 28}        % Fondo oscuro industrial
+\definecolor{seblue}{RGB}{0, 158, 224}       % Azul técnico para enlaces
+\definecolor{textmain}{RGB}{32, 33, 36}
+\definecolor{textlight}{RGB}{95, 99, 104}
+\definecolor{bordergray}{RGB}{218, 220, 224}
+
+% Personalización elegante de los encabezados de sección
+\usepackage{titlesec}
+\titleformat{\section}{\color{sedark}\normalfont\Large\bfseries\sffamily}{\thesection}{1em}{}[\vspace{0.3ex}{\color{segreen}\titlerule[1.5pt]}]
+\titleformat{\subsection}{\color{textmain}\normalfont\large\bfseries\sffamily}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\color{textlight}\normalfont\normalsize\bfseries\sffamily}{\thesubsubsection}{1em}{}
+
+% Encabezados y pies de página
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{sedark}{\textbf{Electric Design Suite}} \textcolor{textlight}{| Manual de Ingeniería}}
+\fancyhead[R]{\textcolor{segreen}{\textbf{Versión 1.0}}}
+\fancyfoot[L]{\textcolor{textlight}{\small Universidad de Almería - Curso 25/26}}
+\fancyfoot[R]{\textcolor{textlight}{\small Página \thepage}}
+\renewcommand{\headrulewidth}{0.8pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{segreen}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrulewidth}{0.5pt}
+\renewcommand{\footrule}{\hbox to\headwidth{\color{bordergray}\leaders\hrule height \footrulewidth\hfill}}
+
+% Enlaces interactivos con colores limpios
+\usepackage[hidelinks, colorlinks=true, linkcolor=sedark, urlcolor=seblue, citecolor=segreen]{hyperref}
+
+% Paquetes adicionales para matemáticas y gráficos
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{parskip} % Espaciado entre párrafos sin sangría para un look más digital
+
+\begin{document}
+
+% ==========================================
+% PORTADA INDUSTRIAL (Estilo High-End Software)
+% ==========================================
+\begin{titlepage}
+    \thispagestyle{empty}
+    % Fondo con diseño limpio e industrial (Siemens-style)
+    \begin{tikzpicture}[remember picture,overlay]
+        % Fondo general blanco
+        \fill[white] (current page.north west) rectangle (current page.south east);
+        
+        % Cabecera corporativa técnica
+        \fill[sedark] (current page.north west) rectangle ([yshift=-1.8cm]current page.north east);
+        \fill[segreen] ([yshift=-1.8cm]current page.north west) rectangle ([yshift=-2.0cm]current page.north east);
+        
+        % Línea vertical decorativa de alineación a la izquierda (estilo Siemens)
+        \draw[segreen, line width=3pt] ([xshift=2.0cm, yshift=-3.5cm]current page.north west) -- ([xshift=2.0cm, yshift=3.5cm]current page.south west);
+        
+        % DETALLES GEOMÉTRICOS TÉCNICOS (Estilo plano de ingeniería / CAD)
+        % Elementos en la esquina superior derecha
+        \draw[segreen, line width=0.5pt, opacity=0.3] (current page.north east) ++(-1.5,-3) circle (1.2cm);
+        \draw[segreen, line width=0.8pt, opacity=0.2] (current page.north east) ++(-1.5,-3) circle (2.0cm);
+        \draw[sedark, line width=0.4pt, opacity=0.15] (current page.north east) ++(-1.5,-3) circle (2.8cm);
+        \draw[segreen, dashed, line width=0.5pt, opacity=0.2] (current page.north east) ++(-1.5,-3) -- ++(-4, -4);
+        \draw[segreen, dashed, line width=0.5pt, opacity=0.2] (current page.north east) ++(-1.5,-3) -- ++(0, -5);
+        
+        % Elemento en la esquina inferior derecha (Esquema de máquina giratoria / estator)
+        \begin{scope}[shift={([xshift=-3.5cm, yshift=6.5cm]current page.south east)}]
+            \draw[segreen, line width=1pt, opacity=0.25] (0,0) circle (1.5cm);
+            \draw[sedark, line width=0.5pt, opacity=0.15] (0,0) circle (2.3cm);
+            \draw[segreen, dashed, line width=0.5pt, opacity=0.2] (0,0) circle (3.0cm);
+            % Líneas de división de polos
+            \foreach \a in {0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330} {
+                \draw[segreen, line width=0.4pt, opacity=0.15] (0,0) -- (\a:3.2cm);
+            }
+            % Nodos decorativos
+            \fill[segreen, opacity=0.4] (30:2.3cm) circle (2.5pt);
+            \fill[segreen, opacity=0.4] (150:2.3cm) circle (2.5pt);
+            \fill[segreen, opacity=0.4] (270:2.3cm) circle (2.5pt);
+            \draw[sedark, line width=0.8pt, opacity=0.3] (-1.5, -4) -- (2.5, -4);
+            \draw[segreen, line width=1.5pt, opacity=0.4] (-0.5, -4.1) -- (1.5, -4.1);
+        \end{scope}
+    \end{tikzpicture}
+    
+    \vspace*{2.0cm}
+    
+    \noindent\hspace{1.2cm}%
+    \begin{minipage}{\dimexpr\textwidth-1.5cm\relax}
+        \vspace{0.5cm}
+        % Título principal masivo
+        {\fontsize{38}{44}\selectfont \textcolor{sedark}{\textbf{Electric Design Suite}}}\\[0.8em]
+        {\fontsize{16}{20}\selectfont \textcolor{segreen}{\textbf{Software para el análisis de circuitos eléctricos y máquinas eléctricas}}}\\[0.5em]
+        {\fontsize{12}{15}\selectfont \textcolor{textlight}{\textbf{Ingeniería Eléctrica y Automática}}}
+        
+        \vspace{3.5cm}
+        
+        % Subtítulo del manual
+        {\fontsize{24}{28}\selectfont \textbf{\textcolor{sedark}{Manual de Usuario}}}\\[0.6em]
+        {\fontsize{12}{18}\selectfont \textcolor{textlight}{Guía para el empleo del software de simulación de circuitos eléctricos y máquinas eléctricas}}
+        
+        \vspace{4.0cm}
+        
+        % Metadatos estructurados estilo datasheet industrial
+        {\fontsize{9}{11}\selectfont \textcolor{textlight}{\textbf{DESARROLLADO POR:}}}\\[0.3em]
+        {\fontsize{12}{14}\selectfont \textcolor{sedark}{\textbf{Jaime Salinas Reche y Enrique Antonio Raudales Rodríguez}}}\\[1.8em]
+        {\fontsize{9}{11}\selectfont \textcolor{textlight}{\textbf{VERSIÓN DEL SISTEMA:}}}\\[0.3em]
+        {\fontsize{12}{14}\selectfont \textcolor{sedark}{\textbf{Release 1.0.0}}}
+    \end{minipage}
+\end{titlepage}
+
+% ==========================================
+% ÍNDICE
+% ==========================================
+\newpage
+{\color{textmain}
+\tableofcontents
+}
+\newpage
+
+% ==========================================
+% CONTENIDO DEL DOCUMENTO
+% ==========================================
+
+\section{Introducción}
+El software \textbf{Jaque} nace como una respuesta integral a la creciente complejidad en el diseño y análisis de sistemas eléctricos de potencia y máquinas eléctricas. En el contexto de la formación del ingeniero eléctrico moderno, la capacidad de iterar rápidamente sobre diseños complejos, validar normativas y visualizar comportamientos dinámicos es fundamental. 
+
+Esta plataforma, desarrollada íntegramente en Python utilizando el framework \textbf{Streamlit}, permite centralizar una vasta cantidad de conocimientos técnicos y algoritmos de cálculo en una interfaz web intuitiva y profesional. El nombre del software, \textit{Jaque}, simboliza la precisión y el pensamiento estratégico necesarios en la ingeniería para resolver problemas de infraestructura crítica.
+
+A lo largo de este documento, se detallarán las bases físicas y matemáticas de cada módulo, así como los criterios normativos seguidos para garantizar que los cálculos se ajusten a la realidad industrial española y europea.
+
+\subsection{Objetivos del Software}
+El propósito principal de esta suite es proporcionar una herramienta de cálculo que no solo arroje resultados numéricos, sino que facilite la comprensión fenomenológica de los sistemas. Los objetivos específicos incluyen:
+\begin{itemize}
+    \item \textbf{Validación Normativa:} Implementación de los límites establecidos por el Reglamento Electrotécnico para Baja Tensión (REBT) y el Reglamento de Instalaciones de Alta Tensión (RAT).
+    \item \textbf{Análisis Térmico y Mecánico:} Cálculo de la ampacidad de conductores considerando el balance térmico y el intercambio de calor con el entorno.
+    \item \textbf{Simulación de Máquinas:} Modelado de motores de inducción y corriente continua para el estudio de curvas par-velocidad y eficiencia energética.
+    \item \textbf{Optimización Económica:} Evaluación de costes de ciclo de vida (LCC) para la selección óptima de secciones de conductor.
+\end{itemize}
+
+\subsection{Base Teórica y Rigurosidad}
+La rigurosidad técnica de los módulos se sustenta en las obras de referencia de la ingeniería eléctrica española:
+\begin{itemize}
+    \item \textit{"Instalaciones Eléctricas en Media y Baja Tensión"} de \textbf{José García Trasancos}, fuente primordial para los criterios de caída de tensión y dimensionamiento de líneas.
+    \item \textit{"Máquinas Eléctricas"} de \textbf{Jesús Fraile Mora}, cuyos modelos de circuitos equivalentes y teoremas fundamentales (como el Teorema de Ferraris) son la base de los simuladores de motores.
+\end{itemize}
+
+\section{Arquitectura del Sistema}
+El software está diseñado bajo una arquitectura modular que facilita su escalabilidad y mantenimiento. Cada funcionalidad principal reside en un módulo independiente dentro del directorio \texttt{modules/}, permitiendo que la lógica de cálculo esté separada de la interfaz de usuario gestionada por \texttt{main.py}.
+
+\subsection{Tecnologías Empleadas}
+La elección de tecnologías se ha realizado buscando un equilibrio entre potencia de cálculo y facilidad de despliegue:
+\begin{itemize}
+    \item \textbf{Python 3.x:} El lenguaje de programación más versátil en la actualidad para ciencia de datos e ingeniería.
+    \item \textbf{Streamlit:} Framework que permite convertir scripts de datos en aplicaciones web compartibles de forma rápida.
+    \item \textbf{Plotly:} Librería para la generación de gráficos interactivos, permitiendo al ingeniero explorar las curvas de rendimiento y transitorios térmicos de forma táctil.
+    \item \textbf{NumPy \& SciPy:} Bibliotecas para computación científica que permiten realizar integraciones numéricas y optimizaciones de parámetros en tiempo real.
+\end{itemize}
+
+\section{Módulos y Herramientas Analíticas}
+El software se divide en bloques temáticos que cubren desde la teoría básica hasta el diseño avanzado.
+
+\subsection{Cálculos Básicos y Normativa}
+Este módulo, implementado en \texttt{basic\_calculations.py}, constituye el primer paso en cualquier proyecto de ingeniería eléctrica. Su propósito es asentar las bases normativas y físicas necesarias para el dimensionamiento de líneas. Se divide en cinco áreas fundamentales:
+
+\subsubsection{Base de Datos y Clasificación Normativa}
+Este apartado proporciona un sistema de clasificación estructurado para diferentes proyectos (Instalaciones industriales, residenciales, centros comerciales, etc.), categorizándolos según su nivel de tensión (Alta Tensión / Baja Tensión) y su topología (Aérea, Subterránea, Interior). Integra directamente las referencias a los reglamentos oficiales:
+\begin{itemize}
+    \item \textbf{REBT (Baja Tensión):} Instrucciones como ITC-BT-07 e ITC-BT-19.
+    \item \textbf{RAT (Alta Tensión):} ITC-LAT 06 y 07.
+\end{itemize}
+De esta forma, el usuario puede identificar visualmente la relación entre el tipo de proyecto, el nivel de tensión exigido y la normativa que le aplica, facilitando el diseño inicial.
+
+\subsubsection{Análisis de Materiales Conductores}
+Compara las propiedades de los materiales más utilizados en la industria eléctrica: Cobre, Aluminio (AAC) y Aluminio-Acero (ACSR). Se evalúan variables clave como:
+\begin{itemize}
+    \item \textbf{Conductividad Eléctrica:} Crítica para la reducción de pérdidas Joule, referenciada a la norma IACS.
+    \item \textbf{Resistencia a la Tracción Mecánica y Módulo de Young:} Fundamentales para el cálculo de líneas aéreas y tendidos.
+\end{itemize}
+Además, incluye un simulador de cálculo de línea que permite analizar cómo evolucionan la caída de tensión ($\Delta V = \sqrt{3} I R$) y la pérdida de potencia a lo largo de la distancia, verificando dinámicamente si se cumple el límite normativo del 5\% de caída de tensión.
+
+\subsubsection{Estudio de Aislamientos: PVC vs XLPE}
+Presenta una comparativa técnica profunda entre polímeros termoplásticos (PVC) y termoestables (XLPE):
+\begin{itemize}
+    \item \textbf{Límites térmicos:} Demuestra cómo el XLPE soporta hasta 90$^\circ$C en régimen permanente frente a los 70$^\circ$C del PVC, permitiendo hasta un 22\% más de capacidad de carga bajo la misma sección.
+    \item \textbf{Modelo de Arrhenius:} Se implementa una simulación matemática de la degradación térmica del aislamiento en función de la temperatura, evidenciando la superior estabilidad dieléctrica del XLPE.
+\end{itemize}
+
+\subsubsection{Laboratorio de Cálculo}
+Un entorno interactivo donde el usuario (o alumno) puede definir múltiples escenarios variando la longitud, potencia aparente (kVA) y el factor de potencia ($\cos \varphi$). El módulo calcula y tabula automáticamente la resistencia óhmica, intensidad circulante y caída de tensión porcentual para cada caso, generando gráficas comparativas. Este enfoque refuerza la comprensión de las fórmulas fundamentales de las instalaciones trifásicas.
+
+\subsubsection{Asistente Inteligente de Diseño}
+Actúa como un sistema experto preliminar. El usuario introduce parámetros de alto nivel (Tensión de operación, Vida útil esperada, Tipo de aplicación), y el algoritmo devuelve una recomendación técnica fundamentada:
+\begin{itemize}
+    \item \textbf{Material:} Cobre para ciclos de vida largos ($>$30 años) debido al ahorro energético, y Aluminio para proyectos de bajo CAPEX o líneas aéreas largas.
+    \item \textbf{Topología:} Subterránea en distribuciones locales por normativas de seguridad, y aérea en líneas de media/alta tensión para optimizar costes y refrigeración.
+\end{itemize}
+Este asistente conecta la teoría matemática con la toma de decisiones en el mundo real, preparando al estudiante para las consideraciones tecnoeconómicas de la ingeniería.
+
+\subsection{Líneas de Alta Potencia (Cálculo Avanzado)}
+Enfocado en el transporte y distribución de energía, este módulo, definido en \texttt{advanced\_lines.py}, da un salto cuantitativo hacia el diseño profesional. Supera las aproximaciones básicas para introducir variables termodinámicas, métodos exactos de caída de tensión y análisis de viabilidad económica. Se divide en tres pestañas operativas:
+
+\subsubsection{Ampacidad Térmica e Intercambio de Calor}
+La corriente que puede transportar un cable (ampacidad) no es un valor estático, sino que depende de un delicado equilibrio termodinámico. Este apartado simula dicho equilibrio basándose en los principios de \textbf{García Trasancos} y la termodinámica clásica:
+\begin{itemize}
+    \item \textbf{Generación de Calor:} Calcula la potencia disipada por Efecto Joule ($Q_{gen} = 3 \cdot I_{op}^2 \cdot R_T$), corrigiendo dinámicamente la resistencia $R_T$ según la temperatura estimada de operación.
+    \item \textbf{Criterio de Estabilidad:} Implementa un simulador interactivo donde el usuario ingresa la carga, el material y el aislamiento. El sistema cruza estos datos con las curvas de capacidad máxima (ajustadas por temperatura ambiente $K_{temp}$) para alertar sobre posibles escenarios de sobrecarga.
+    \item \textbf{Visualización Dinámica:} Genera un gráfico que muestra la curva térmica del conductor y posiciona el punto de trabajo real, permitiendo visualizar el margen de seguridad térmica restante antes de alcanzar la temperatura de degradación del polímero (ej. 90$^\circ$C para XLPE).
+\end{itemize}
+
+\subsubsection{Caída de Tensión (Método de Blondel)}
+Sustituye la fórmula puramente resistiva por el método exacto exigido en cálculos profesionales e industriales, considerando la impedancia completa de la línea ($Z = R + jX$).
+\begin{itemize}
+    \item El algoritmo procesa la ecuación: $\Delta U = \sqrt{3} \cdot L \cdot I \cdot (r \cdot \cos \varphi + x \cdot \sin \varphi)$.
+    \item Incorpora la verificación automática frente a los límites normativos del REBT (como la ITC-BT-19), alertando visualmente si la sección de cobre o aluminio seleccionada supera el umbral permitido.
+\end{itemize}
+
+\subsubsection{Optimización Económica mediante LCC}
+La ingeniería moderna exige que el diseño no solo sea técnicamente viable, sino también económicamente óptimo. Este submódulo implementa el \textbf{Análisis de Coste de Ciclo de Vida (LCC)} inspirado en el estándar \textit{IEC 60287-3-2}.
+\begin{itemize}
+    \item El algoritmo evalúa iterativamente una base de datos de secciones estandarizadas de cables (desde 1.5 mm$^2$ hasta 240 mm$^2$).
+    \item \textbf{CAPEX (Coste de Capital):} Calcula el coste inicial de adquisición del cable.
+    \item \textbf{OPEX (Coste Operativo):} Cuantifica económicamente las pérdidas por efecto Joule a lo largo de los años de vida útil del proyecto.
+    \item \textbf{Decisión Automatizada:} El software determina e ilustra gráficamente el punto de intersección óptimo (la sección de cable que minimiza la suma de CAPEX y OPEX), demostrando que, a menudo, invertir en un cable de mayor sección inicial ahorra miles de euros en energía disipada a largo plazo.
+\end{itemize}
+
+\subsection{Topología y Dimensionado de Redes}
+Este módulo (\texttt{topology.py}) permite modelar, simular y visualizar la distribución espacial de la carga en distintos esquemas de interconexión eléctrica. Es una herramienta fundamental para planificar redes de distribución urbanas e industriales, superando el análisis de un solo tramo para considerar múltiples cargas distribuidas a diferentes distancias.
+
+\subsubsection{Configuraciones Topológicas Soportadas}
+El algoritmo central adapta las leyes de Kirchhoff para resolver cuatro tipos de estructuras de red:
+\begin{itemize}
+    \item \textbf{Redes Radiales:} El esquema más simple y económico. La corriente fluye en una sola dirección desde la subestación (Source A) hasta el último abonado. El algoritmo calcula la caída de tensión acumulativa en cada segmento.
+    \item \textbf{Redes alimentadas por ambos extremos (Dual-Fed):} La línea recibe energía de dos subestaciones (Source A y Source B) con tensiones que pueden ser diferentes. El simulador resuelve el equilibrio de momentos eléctricos para encontrar el punto de mínima tensión (Punto de Corte), donde la corriente cambia de dirección.
+    \item \textbf{Redes en Anillo:} Variación de la red Dual-Fed donde ambas fuentes son físicamente el mismo punto (Source A = Source B). Maximizan la redundancia y fiabilidad frente a cortes.
+    \item \textbf{Redes Malladas:} Representación conceptual estática para sistemas complejos con múltiples fuentes y caminos paralelos (se reserva el análisis nodal matricial para herramientas externas de mayor peso computacional).
+\end{itemize}
+
+\subsubsection{Dimensionamiento basado en Momentos Activos}
+A diferencia del dimensionamiento básico, este módulo emplea el método de los \textbf{Momentos Eléctricos Activos} ($M = I_{activa} \cdot L$).
+\begin{itemize}
+    \item Se desglosa la corriente de cada nodo en su componente activa y reactiva según su factor de potencia ($\cos \varphi$).
+    \item El sistema sugiere automáticamente la sección transversal mínima teórica de conductor ($S_{min}$) necesaria para no superar el límite reglamentario de caída de tensión (ej. 5\% según REBT), validando instantáneamente si la sección elegida por el usuario es segura o insuficiente.
+\end{itemize}
+
+\subsubsection{Perfiles de Tensión y Visor Esquemático}
+El gran valor de este módulo reside en la generación de diagramas unifilares dinámicos gracias a la librería \texttt{Plotly}:
+\begin{itemize}
+    \item \textbf{Diagramas Unifilares y Circulares:} Dibuja automáticamente la distribución física de las cargas, creando vistas lineales para redes radiales o diagramas circulares completos para anillos.
+    \item \textbf{Perfil de Caída de Tensión:} Genera una gráfica decreciente a lo largo de la distancia, ubicando la línea roja del límite normativo y marcando explícitamente los nodos críticos.
+    \item \textbf{Distribución de Corriente (Flujo en Cascada):} Mediante gráficos de área escalonados (\textit{step-area charts}), ilustra cómo la corriente va disminuyendo a medida que cada carga o abonado drena su parte correspondiente, permitiendo comprender visualmente el reparto de energía a lo largo de la línea troncal.
+\end{itemize}
+
+\subsection{Principios del Electromagnetismo}
+El módulo \texttt{electromagnetism.py} es el pilar teórico fundamental para la comprensión de transformadores y máquinas rotativas. Implementa interactividad avanzada para visualizar fenómenos invisibles y resolver circuitos ferromagnéticos, dividido en cuatro áreas principales:
+
+\subsubsection{Campo Magnético y Ley de Ampère}
+Establece la relación entre corriente eléctrica y campo magnético.
+\begin{itemize}
+    \item Implementa la \textbf{Ley de Ampère} para evaluar la atenuación de la densidad de flujo ($B = \mu_0 \cdot I / 2\pi r$) alrededor de un conductor infinito.
+    \item Incluye una simulación interactiva donde el usuario puede modificar la corriente inyectada y visualizar gráficamente cómo decae la intensidad del campo en función de la distancia espacial.
+\end{itemize}
+
+\subsubsection{Materiales Magnéticos, Histéresis y Pérdidas}
+Profundiza en el comportamiento no lineal de los núcleos ferromagnéticos y su impacto termodinámico en las máquinas.
+\begin{itemize}
+    \item \textbf{Ciclo de Histéresis Dinámico:} Genera la curva B-H aplicando una función de tangente hiperbólica ajustada a parámetros reales (Acero al Silicio vs Acero Estructural). Calcula mediante integración (\texttt{np.trapz}) el área del ciclo, que representa la energía disipada por unidad de volumen.
+    \item \textbf{Cálculo de Pérdidas:} Cuantifica numéricamente las pérdidas por Histéresis (proporcionales a la frecuencia) y las pérdidas por corrientes de Foucault (proporcionales al cuadrado de la frecuencia y la inducción).
+    \item \textbf{Modelo Térmico Integrado:} Utiliza la Resistencia Térmica del núcleo para predecir la temperatura de régimen permanente ($T_{final} = T_{amb} + P_{tot} \cdot R_{th}$), enlazando el electromagnetismo con el diseño térmico.
+\end{itemize}
+
+\subsubsection{Resolución de Circuitos Magnéticos (Hopkinson)}
+Permite la construcción y resolución de circuitos magnéticos complejos por tramos, aplicando la analogía eléctrica (FMM $\approx$ Tensión, Flujo $\approx$ Corriente, Reluctancia $\approx$ Resistencia).
+\begin{itemize}
+    \item \textbf{Construcción Modular:} El usuario puede agregar segmentos iterativos de núcleo de hierro o entrehierros de aire, definiendo longitud y sección cruzada.
+    \item \textbf{Cálculo de Malla:} El algoritmo computa la reluctancia equivalente total ($\mathcal{R}_{eq}$) y el flujo resultante generado por la Fuerza Magnetomotriz inyectada ($N \cdot I$).
+    \item \textbf{Generación de Esquema SVG:} Renderiza automáticamente (programado mediante inyección de código SVG nativo) un diagrama análogo clásico, ilustrando la fuente de excitación y las reluctancias en serie.
+    \item \textbf{Alerta de Saturación:} Evalúa el vector de densidad de flujo ($B$) en cada tramo del hierro, lanzando alertas de diseño si el material supera el codo de saturación (típicamente 1.6 Tesla).
+\end{itemize}
+
+
+\subsection{Máquinas Asíncronas (Motores de Inducción)}
+Definido en el núcleo computacional \texttt{asincronous.py}, este es sin lugar a dudas uno de los módulos más densos y completos de la \textit{Electric Design Suite}. Su objetivo es transformar la teoría clásica de máquinas de corriente alterna (basada en la bibliografía canónica de la ingeniería eléctrica, como \textbf{Jesús Fraile Mora}) en una experiencia visual e interactiva. El motor de inducción, siendo el "caballo de batalla" de la industria moderna debido a su robustez y ausencia de escobillas, requiere una comprensión abstracta superior que este módulo materializa a lo largo de las siguientes áreas temáticas profundas:
+
+\subsubsection{Teorema de Ferraris y Campo Magnético Giratorio}
+La comprensión de cualquier máquina de corriente alterna comienza por visualizar lo invisible: el campo magnético.
+\begin{itemize}
+    \item \textbf{Principio del Campo Rotativo:} El software implementa el \textbf{Teorema de Ferraris}, que demuestra matemáticamente cómo tres bobinas desfasadas 120$^\circ$ geométricamente en el estator, al ser alimentadas por un sistema trifásico de corrientes desfasadas 120$^\circ$ eléctricamente en el tiempo, producen un campo magnético de magnitud constante que gira en el espacio.
+    \item \textbf{Simulación Vectorial en Tiempo Real:} Mediante un componente interactivo impulsado por \texttt{Plotly} y un deslizador temporal ($\omega t$), el alumno puede observar cómo los tres fasores pulsantes individuales de cada fase (U, V, W) interactúan y se suman vectorialmente. El simulador comprueba y grafica el vector resultante, cuya magnitud invariable es $1.5 \cdot B_{max}$ y cuya velocidad es la velocidad de sincronismo ($n_s$).
+\end{itemize}
+
+\subsubsection{Cinemática del Rotor y Concepto de Deslizamiento}
+A diferencia de los motores síncronos, el rotor de la máquina de inducción nunca puede girar a la velocidad del campo estatórico.
+\begin{itemize}
+    \item \textbf{Interacción Faraday-Lenz:} Se detalla paso a paso el fenómeno: las líneas del campo giratorio cortan las barras del rotor (ley de Faraday), induciendo tensiones que, al estar el rotor cortocircuitado (jaula de ardilla), generan corrientes. Estas corrientes crean su propio campo magnético que persigue al campo principal intentando anular la variación de flujo (ley de Lenz), dando como resultado el giro.
+    \item \textbf{Deslizamiento Relativo ($s$):} Se establece matemáticamente el "deslizamiento" como el nexo fundamental entre el mundo eléctrico y el mecánico: $s = (n_s - n)/n_s$. El software calcula en tiempo real cómo la frecuencia de las corrientes en el propio rotor ($f_2$) varía continuamente con la velocidad mecánica de la carga ($f_2 = s \cdot f_1$).
+\end{itemize}
+
+\subsubsection{Circuito Equivalente (Modelo Térmico de Steinmetz)}
+Para predecir el comportamiento en régimen permanente sin necesidad de resolver ecuaciones diferenciales tridimensionales complejas de Maxwell, el módulo despliega la teoría circuital clásica:
+\begin{itemize}
+    \item \textbf{El Motor como Transformador Rotativo:} Muestra los esquemas eléctricos del circuito \textbf{Exacto} (con rama en "T") y el \textbf{Aproximado} (con la rama magnetizante en paralelo en bornes de entrada), resolviendo las impedancias estatóricas ($R_1, X_1$) y rotóricas referidas al estator ($R'_2, X'_2$).
+    \item \textbf{Desdoblamiento Físico de la Resistencia:} Realiza una explicación teórica vital para el ingeniero: cómo el término matemático equivalente $R'_2/s$ no es una resistencia real, sino que se divide en dos componentes. Una representa el calentamiento puramente térmico en el cobre del rotor ($R'_2$), y la otra es una "resistencia ficticia" ($R'_2 \frac{1-s}{s}$) que modela térmicamente la extracción de energía mecánica o potencia útil transferida al eje.
+\end{itemize}
+
+\subsubsection{Análisis Dinámico de la Curva Par-Velocidad}
+El comportamiento de un motor de inducción frente a su carga mecánica define su idoneidad para una aplicación industrial. El software genera de forma dinámica la huella electromecánica de la máquina:
+\begin{itemize}
+    \item \textbf{Simulación Paramétrica Continua:} A través del despeje de la fórmula de par de Kloss, el usuario interactúa modificando las resistencias inductivas y resistivas. La gráfica resultante reacciona mostrando las alteraciones morfológicas de la curva.
+    \item \textbf{Hitos Operativos y Zonas de Estabilidad:} El algoritmo traza y extrae automáticamente marcadores visuales para el \textbf{Par de Arranque} ($s=1$), el \textbf{Par Máximo o de Vuelco} (punto límite antes del colapso térmico o estancamiento del motor) y la velocidad de sincronismo en vacío.
+    \item \textbf{Comportamiento Asintótico:} Se justifica con rigor analítico por qué cerca del punto de arranque el comportamiento es hiperbólico ($M \propto 1/s$) y por qué en la zona operativa lineal y estable cerca del sincronismo, la curva es prácticamente una recta ($M \propto s$).
+\end{itemize}
+
+\subsubsection{Balances Energéticos y Auditoría de Flujo Térmico}
+La eficiencia y el rendimiento de la máquina asíncrona se explican aplicando el Primer Principio de la Termodinámica:
+\begin{itemize}
+    \item \textbf{Gráfico de Cascada de Potencia (Waterfall):} El sistema genera un diagrama dinámico de escalones donde la Potencia Eléctrica Activa inyectada ($P_1$) va mermando a medida que atraviesa la topología física de la máquina. Se contabilizan visualmente las mermas de Efecto Joule del estator ($P_{Cu1}$), las pérdidas de magnetización del núcleo de hierro ($P_{Fe}$), conformando la \textbf{Potencia de Entrehierro} o síncrona ($P_e$). Finalmente, se restan las pérdidas en el cobre del rotor ($P_{Cu2}$) y el rozamiento eólico/mecánico ($P_{mec}$) hasta llegar a la potencia entregada al eje ($P_u$).
+    \item \textbf{Teorema de Rendimiento Máximo:} Integra cálculos avanzados que ayudan a hallar el punto de funcionamiento del motor donde las pérdidas fijas se igualan a las pérdidas variables (dependientes de la carga), determinando el factor de carga óptimo para la máxima eficiencia energética industrial.
+\end{itemize}
+
+\subsubsection{Diseño de Devanados y Placa de Características}
+Para conectar la teoría de circuitos con la realidad del fabricante y el mantenimiento industrial:
+\begin{itemize}
+    \item \textbf{Análisis de Armónicos Espaciales:} Estudia matemáticamente cómo la distribución real del bobinado de cobre atenúa las irregularidades del campo magnético evaluando los factores constructivos de Distribución ($K_d$) y Acortamiento de Paso ($K_p$).
+    \item \textbf{Ingeniería de Placa:} Un asistente interactivo desglosa y explica la nomenclatura obligatoria que todo ingeniero debe auditar en una placa real: factor de potencia (cos$\varphi$), clases de aislamiento térmico (A, E, B, F, H), grado de protección envolvente (Código IP) y las modernas directrices normativas de eco-diseño (Clases IE1 hasta IE4 Premium Efficiency).
+\end{itemize}
+
+\subsection{Motores de Corriente Continua (DC)}
+El módulo dedicado a los motores de corriente continua (\texttt{dc\_motors.py}) proporciona una inmersión profunda en la máquina eléctrica tradicionalmente considerada como la más fácil de controlar, y cuya comprensión es fundamental para asimilar las bases de la tracción eléctrica, la regulación industrial de velocidad y los fundamentos del control vectorial moderno en máquinas de alterna. El estudio de esta máquina en el software se ha estructurado en apartados que combinan la rigurosidad matemática con potentes simulaciones interactivas y animaciones 2D. A continuación se detallan exhaustivamente los elementos abordados:
+
+\subsubsection{Principios Fundamentales y Morfología}
+La comprensión de un motor DC requiere visualizar cómo los principios electromagnéticos fundamentales se materializan en un diseño electromecánico sumamente ingenioso. El software disecciona estos principios:
+\begin{itemize}
+    \item \textbf{Fuerza de Lorentz y Par Motor:} Se detalla a nivel microscópico cómo la inyección de corriente continua a través de los conductores del rotor, inmersos en el campo magnético constante generado por el estator, resulta en la aparición de una fuerza ortogonal según la ley de Lorentz ($d\vec{F} = I \cdot d\vec{l} \times \vec{B}$). Esta fuerza, al actuar sobre el radio del cilindro rotórico, produce el par mecánico de giro.
+    \item \textbf{Fuerza Contraelectromotriz (FCEM):} Se explica la dualidad inherente de la máquina: al girar, los conductores cortan líneas de flujo, induciendo por la ley de Faraday una tensión interna que se opone a la alimentación de la red, actuando como un regulador natural de la corriente absorbida ($E = K \cdot \Phi \cdot \omega$).
+    \item \textbf{Constitución Física y Conmutación:} Mediante gráficos vectoriales interactivos, se explican las partes físicas de la máquina:
+    \begin{itemize}
+        \item \textbf{Estator (Inductor):} Elemento fijo encargado de crear el flujo principal ($\Phi$).
+        \item \textbf{Rotor (Inducido):} Cilindro ferromagnético ranurado donde se aloja el devanado de potencia.
+        \item \textbf{Colector de Delgas y Escobillas:} El corazón del motor DC. El software ilustra su función como un inversor/rectificador mecánico. A medida que el rotor gira, la conmutación asegura que la corriente en los conductores bajo un polo específico siempre circule en el mismo sentido, garantizando un par unidireccional y continuo.
+    \end{itemize}
+    \item \textbf{Desacoplo y Ortogonalidad:} Se enfatiza teóricamente por qué el diseño mecánico de las escobillas fuerza un ángulo eléctrico de 90$^\circ$ entre el flujo del estator y el inducido. Esta ortogonalidad máxima permite controlar el flujo magnético y el par motor de forma totalmente independiente, ventaja operativa histórica del motor de continua.
+\end{itemize}
+
+\subsubsection{Ecuaciones Fundamentales y Balance Energético}
+El análisis cuantitativo de la máquina se basa en un modelo circuital que el usuario puede explorar:
+\begin{itemize}
+    \item \textbf{Ecuación de Tensión:} Desarrolla el circuito equivalente en régimen permanente ($V = E + I_a \cdot R_a$), permitiendo comprender las caídas de tensión internas frente a la alimentación de la red.
+    \item \textbf{Balance de Potencia en Cascada (Waterfall):} El software desglosa de manera gráfica y analítica cómo la Potencia Eléctrica Absorbida ($P_{abs}$) se va degradando hasta convertirse en Potencia Mecánica Útil en el eje ($P_u$). Se descuentan rigurosamente las pérdidas por efecto Joule en el cobre del inducido y el inductor ($P_{Cu}$), para obtener la Potencia Electromagnética ($P_{mi}$), a la cual se le sustraen las pérdidas rotacionales (mecánicas y en el núcleo ferromagnético) para determinar el rendimiento neto del sistema.
+\end{itemize}
+
+\subsubsection{Excitación y Modos de Conexión}
+El comportamiento de la máquina varía drásticamente en función de cómo se interconectan eléctricamente el inducido y el inductor. El módulo documenta y previene sobre los riesgos operativos de cada configuración:
+\begin{itemize}
+    \item \textbf{Excitación Independiente y Shunt (Derivación):} Analiza las configuraciones donde el campo inductor es paralelo o externo a la armadura. Proporcionan una velocidad casi constante frente a cambios de carga y un control muy lineal, ideales para cintas transportadoras o máquinas herramienta.
+    \item \textbf{Excitación Serie:} El inductor y el inducido se conectan en serie. Se expone su extraordinaria capacidad para entregar pares de arranque altísimos ($M \propto I^2$), justificando su hegemonía en la tracción ferroviaria clásica. Se advierte rigurosamente del peligro de embalamiento si el motor pierde su carga mecánica en vacío.
+    \item \textbf{Excitación Compuesta (Compound):} Explora el compromiso híbrido que suma los devanados serie y derivación para obtener buenos pares de arranque manteniendo una velocidad de vacío segura.
+\end{itemize}
+
+\subsubsection{Control de Velocidad y Curvas Características}
+A partir de las ecuaciones fundamentales, se despeja la ecuación paramétrica de la curva par-velocidad: $\omega = \frac{V}{K \Phi} - \frac{R_a}{(K \Phi)^2} M$. Un simulador interactivo permite al usuario visualizar el desplazamiento del punto de operación al alterar:
+\begin{itemize}
+    \item \textbf{Regulación por Tensión de Armadura ($V$):} El método óptimo, que desplaza paralelamente la curva de velocidad sin afectar el par máximo disponible, ideal para arranques y operación por debajo de la velocidad base.
+    \item \textbf{Debilitamiento de Campo ($\Phi$):} Simulando la reducción de la excitación para lograr altas velocidades (por encima de la nominal), demostrando gráficamente cómo esto se penaliza con una fuerte caída de la pendiente de par, aplicable cuando se requiere potencia constante pero bajo par mecánico.
+    \item \textbf{Regulación Reostática ($R_a$):} Adición de resistencias serie, evidenciando su ineficiencia térmica y pérdida de regulación, reservada antiguamente para el control en bucle abierto.
+\end{itemize}
+
+\subsubsection{Transitorios Críticos: El Arranque}
+Al carecer de fuerza contraelectromotriz inicial ($E=0$ en $t=0$), el motor se expone a corrientes destructivas limitadas únicamente por la pequeña resistencia $R_a$. 
+\begin{itemize}
+    \item El módulo diagnostica numéricamente los picos de intensidad que pueden dañar el colector.
+    \item Implementa una herramienta de diseño para dimensionar los escalones de un \textbf{Reóstato de Arranque} ($R_{arr}$), ilustrando el proceso iterativo de corte de resistencias a medida que el motor gana velocidad y desarrolla su propia FCEM para contener la corriente absorbida.
+\end{itemize}
+
+\subsubsection{Operación en Cuatro Cuadrantes}
+Para abordar aplicaciones de robótica, montacargas y tracción, se modela el comportamiento de la máquina en todo el espectro dinámico de avance y retroceso. Mediante un mapa cartesiano interactivo de Par frente a Velocidad, el software clasifica:
+\begin{itemize}
+    \item \textbf{Modo Motor (Cuadrantes I y III):} Donde la máquina transforma potencia eléctrica en potencia mecánica útil (velocidad y par con el mismo signo), acelerando la carga.
+    \item \textbf{Modo Freno o Generador (Cuadrantes II y IV):} El motor absorbe energía cinética mecánica de la carga (velocidad y par con signos opuestos) para detenerla de forma controlada o retenerla en un descenso continuo, inyectando energía eléctrica de vuelta a la red o disipándola en resistencias de frenado dinámico.
+    \item Se explica la relevancia de la topología electrónica (como el Puente en H) que orquesta la inversión de polaridades para gobernar las transiciones entre estos cuatro regímenes termodinámicos.
+\end{itemize}
+
+\subsection{Máquinas Síncronas (Alternadores y Motores)}
+El módulo dedicado a las máquinas síncronas (\texttt{synchronous\_machines.py}) constituye el vértice superior del estudio electromecánico en la plataforma. Al ser la máquina responsable de generar la práctica totalidad de la energía eléctrica consumida a nivel mundial en centrales eléctricas, y siendo fundamental en aplicaciones de motor de precisión e hiper-eficientes (como la tracción de vehículos eléctricos modernos), requiere un análisis minucioso de su acoplamiento con la red. Se estructura detalladamente en las siguientes áreas de estudio:
+
+\subsubsection{Fundamento Dual y Sincronismo}
+La máquina síncrona se diferencia fundamentalmente de la asíncrona en su naturaleza de "doble alimentación", concepto que el software ilustra detalladamente:
+\begin{itemize}
+    \item \textbf{Doble Excitación:} Se analiza cómo el estator se conecta a la red de corriente alterna (creando el campo giratorio), mientras que el rotor requiere ser excitado de forma independiente mediante corriente continua (creando polos magnéticos fijos en el rotor).
+    \item \textbf{Anclaje Magnético (Sin Deslizamiento):} A diferencia del motor de inducción, se explica el fenómeno de "enganche" magnético. Los polos del rotor se entrelazan rígidamente con los polos del campo giratorio del estator. Por consiguiente, el rotor gira estrictamente a la velocidad de sincronismo ($n = n_s$), eliminando matemáticamente la variable del deslizamiento ($s = 0$).
+\end{itemize}
+
+\subsubsection{Modelo Circuital y Reactancia Síncrona}
+El estudio en régimen permanente estacionario requiere modelizar los devanados reales en un circuito equivalente simplificado por fase:
+\begin{itemize}
+    \item \textbf{Tensión Interna Inducida ($E_0$):} Modela la F.E.M. en vacío generada exclusivamente por el flujo del rotor, proporcional a la excitación en continua.
+    \item \textbf{Reactancia Síncrona ($X_s$):} El software desglosa esta impedancia gigante como la suma de la reactancia de dispersión del estator y, de forma mucho más masiva, la reactancia de reacción de inducido. Esto modela la interacción desmagnetizante o magnetizante entre el campo del rotor y el campo generado por las propias corrientes del estator.
+\end{itemize}
+
+\subsubsection{Diagramas Fasoriales y Gestión de Potencia Reactiva}
+Quizás la mayor ventaja de la máquina síncrona conectada a red infinita es su capacidad como regulador de energía, un fenómeno que se simula de forma vectorial:
+\begin{itemize}
+    \item \textbf{Estado Subexcitado (Comportamiento Inductivo):} Cuando la excitación es baja ($E_0 < V_{red}$), la máquina absorbe potencia reactiva de la red para auto-magnetizarse, comportándose analógicamente como una bobina gigante.
+    \item \textbf{Estado Sobreexcitado (Comportamiento Capacitivo):} Si se incrementa sustancialmente la excitación ($E_0 > V_{red}$), el fasor de corriente se adelanta al de la tensión. La máquina inyecta potencia reactiva a la red, actuando como un banco de condensadores dinámico, funcionalidad conocida como "Condensador Síncrono" y vital para estabilizar tensiones en líneas de alta tensión.
+\end{itemize}
+
+\subsubsection{Curvas de Mordey (Curvas en V)}
+La interrelación no lineal entre el control de excitación y la corriente absorbida se representa a través de las famosas curvas de Mordey. El módulo incluye simulaciones paramétricas rigurosas de estas curvas:
+\begin{itemize}
+    \item \textbf{Punto de Operación Óptimo:} Un simulador dinámico \texttt{Plotly} permite variar la potencia mecánica de carga y visualizar cómo la curva adopta su forma de "V". El vértice inferior o valle representa matemáticamente el punto de máxima eficiencia eléctrica, donde la corriente de armadura ($I_a$) se minimiza y el factor de potencia es unitario ($\cos \varphi = 1$).
+    \item \textbf{Fronteras de Estabilidad Térmica:} Se grafican también los límites de calentamiento del estator (por alta $I_a$ reactiva) y del rotor (por exceso de corriente de excitación requerida para el estado capacitivo).
+\end{itemize}
+
+\subsubsection{Límites de Estabilidad y Riesgo de Desenganche}
+Se estudia el comportamiento mecánico límite a partir de la \textbf{Ecuación de Potencia Síncrona} $P = \frac{3 \cdot V \cdot E_0}{X_s} \sin \delta$, donde $\delta$ es el ángulo de carga o desfase angular físico entre los polos del rotor y el estator.
+\begin{itemize}
+    \item \textbf{Elástico Magnético:} Se ilustra cómo, al exigir más par mecánico al motor, el rotor comienza a retrasarse físicamente (el ángulo $\delta$ aumenta) pero sin perder la velocidad síncrona (como un muelle tensándose).
+    \item \textbf{Pérdida de Paso (Pole Slipping):} El módulo advierte mediante su modelado matemático que si la carga mecánica fuerza a $\delta$ a superar los $90^\circ$ eléctricos, la derivada del par se vuelve negativa. El vínculo magnético "se rompe" y el rotor pierde el sincronismo, un evento catastrófico en generadores industriales.
+\end{itemize}
+
+
+
+\end{document}
